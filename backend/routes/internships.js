@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import * as controller from '../controllers/internshipController.js';
+import { protect, authorize } from '../middleware/auth.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+const router = Router();
+router.get('/', asyncHandler(controller.listInternships));
+router.get('/featured', asyncHandler(controller.featuredInternships));
+router.get('/stats', asyncHandler(controller.publicStats));
+router.get('/mine', protect, authorize('employer', 'admin'), asyncHandler(controller.mine));
+router.get('/:id', asyncHandler(controller.getInternship));
+router.post('/', protect, authorize('employer', 'admin'), asyncHandler(controller.createInternship));
+router.patch('/:id', protect, authorize('employer', 'admin'), asyncHandler(controller.updateInternship));
+router.delete('/:id', protect, authorize('employer', 'admin'), asyncHandler(controller.deleteInternship));
+export default router;

@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import * as controller from '../controllers/applicationController.js';
+import { protect, authorize } from '../middleware/auth.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+const router = Router();
+router.use(protect);
+router.get('/mine', authorize('user'), asyncHandler(controller.myApplications));
+router.get('/', authorize('admin'), asyncHandler(controller.allApplications));
+router.post('/:internshipId', authorize('user'), asyncHandler(controller.apply));
+router.get('/internship/:internshipId', authorize('employer', 'admin'), asyncHandler(controller.applicants));
+router.patch('/:id/status', authorize('employer', 'admin'), asyncHandler(controller.updateStatus));
+export default router;

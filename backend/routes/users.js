@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { protect, authorize } from '../middleware/auth.js';
+import { updateProfile, uploadResume, downloadResume, listUsers, deleteUser } from '../controllers/userController.js';
+import { resumeUpload } from '../middleware/upload.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+const router = Router();
+router.patch('/me', protect, asyncHandler(updateProfile));
+router.post('/me/resume', protect, (req, res, next) => resumeUpload(req, res, error => error ? res.status(400).json({ message: error.message }) : next()), asyncHandler(uploadResume));
+router.get('/:id/resume', protect, authorize('user', 'employer', 'admin'), asyncHandler(downloadResume));
+router.get('/', protect, authorize('admin'), asyncHandler(listUsers));
+router.delete('/:id', protect, authorize('admin'), asyncHandler(deleteUser));
+export default router;

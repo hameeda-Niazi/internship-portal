@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { createMessage, listMessages, updateMessage, deleteMessage } from '../controllers/contactController.js';
+import { protect, authorize } from '../middleware/auth.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+const router = Router();
+router.post('/', asyncHandler(createMessage));
+router.get('/', protect, authorize('admin'), asyncHandler(listMessages));
+router.patch('/:id', protect, authorize('admin'), asyncHandler(updateMessage));
+router.delete('/:id', protect, authorize('admin'), asyncHandler(deleteMessage));
+export default router;
